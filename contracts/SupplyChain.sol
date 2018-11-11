@@ -73,7 +73,10 @@ contract SupplyChain {
   modifier received (uint _sku) { require( uint(items[_sku].state) == 3 ); _;}
 
 
-  constructor() public {
+  constructor() public payable {
+
+    // Added payable-modifier after remix-testing. 
+
     /* Here, set the owner as the person who instantiated the contract
        and set your skuCount to 0. */
     owner = msg.sender;
