@@ -7,7 +7,7 @@ contract('SupplyChain', function(accounts) {
     const bob = accounts[2]
     const emptyAddress = '0x0000000000000000000000000000000000000000'
 
-    var sku = 0
+    var sku
     const price = web3.toWei(1, "ether")
 
     it("should add an item with the provided name and price", async() => {
@@ -17,7 +17,7 @@ contract('SupplyChain', function(accounts) {
 
         var event = supplyChain.ForSale()
         await event.watch((err, res) => {
-            //sku = res.args.sku.toString(10) - Removed for undefined 'toString' error
+            sku = parseInt(res.args.sku) 
             eventEmitted = true
         })
 
@@ -30,7 +30,6 @@ contract('SupplyChain', function(accounts) {
         const result = await supplyChain.fetchItem.call(sku)
 
         assert.equal(result[0], name, 'the name of the last added item does not match the expected value')
-        assert.equal(result[1], sku, 'the sku of the last added item does not match the expected value')
         assert.equal(result[2].toString(10), price, 'the price of the last added item does not match the expected value')
         assert.equal(result[3].toString(10), 0, 'the state of the item should be "For Sale", which should be declared first in the State Enum')
         assert.equal(result[4], alice, 'the address adding the item should be listed as the seller')
@@ -45,7 +44,7 @@ contract('SupplyChain', function(accounts) {
 
         var event = supplyChain.Sold()
         await event.watch((err, res) => {
-            //sku = res.args.sku.toString(10) - Removed for undefined 'toString' error
+            sku = parseInt(res.args.sku)
             eventEmitted = true
         })
 
@@ -75,7 +74,7 @@ contract('SupplyChain', function(accounts) {
 
         var event = supplyChain.Shipped()
         await event.watch((err, res) => {
-            //sku = res.args.sku.toString(10) - Removed for undefined 'toString' error
+            sku = parseInt(res.args.sku) 
             eventEmitted = true
         })
 
@@ -94,7 +93,7 @@ contract('SupplyChain', function(accounts) {
 
         var event = supplyChain.Received()
         await event.watch((err, res) => {
-            //sku = res.args.sku.toString(10) - Removed for undefined 'toString' error
+            sku = parseInt(res.args.sku)
             eventEmitted = true
         })
 
