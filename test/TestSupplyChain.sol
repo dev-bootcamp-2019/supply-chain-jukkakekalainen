@@ -6,11 +6,32 @@ import "../contracts/SupplyChain.sol";
 
 contract TestSupplyChain {
 
+    SupplyChain supplyChain = SupplyChain(DeployedAddresses.SupplyChain());
+
+    //mapping (uint => Item) public items;
+
     // Test for failing conditions in this contracts
     // test that every modifier is working
 
     // buyItem
 
+/**
+    function testBuy() public {
+
+        supplyChain.addItem("book", 10);
+        supplyChain.buyItem(0);
+     
+        (string _name, uint _sku, uint _price, uint _state, address _seller, address _buyer) = supplyChain.fetchItem(0);
+        
+        //string name = fetchedTestItem[name]; 
+
+        //items = supplyChain.items;
+        uint expected = 1;
+
+        Assert.equal(_state, expected, "Bought item.");
+
+    }
+**/
     // test for failure if user does not send enough funds
     // test for purchasing an item that is not for Sale
 

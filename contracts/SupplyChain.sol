@@ -45,32 +45,32 @@ contract SupplyChain {
   /* Create 4 events with the same name as each possible State (see above)
     Each event should accept one argument, the sku*/
 
-    event ForSale(uint _sku);
-    event Sold(uint _sku);
-    event Shipped(uint _sku);
-    event Received(uint _sku);
+    event ForSale(uint sku);
+    event Sold(uint sku);
+    event Shipped(uint sku);
+    event Received(uint sku);
 
 /* Create a modifer that checks if the msg.sender is the owner of the contract */
 
   modifier verifyCaller (address _address) { require (msg.sender == _address); _;}
 
   modifier paidEnough(uint _price) { require(msg.value >= _price); _;}
-  modifier checkValue(uint _sku) {
+  modifier checkValue(uint sku) {
     //refund them after pay for item (why it is before, _ checks for logic before func)
     _;
-    uint _price = items[_sku].price;
+    uint _price = items[sku].price;
     uint amountToRefund = msg.value - _price;
-    items[_sku].buyer.transfer(amountToRefund);
+    items[sku].buyer.transfer(amountToRefund);
     }
 
   /* For each of the following modifiers, use what you learned about modifiers
    to give them functionality. For example, the forSale modifier should require
    that the item with the given sku has the state ForSale. */
 
-  modifier forSale (uint _sku) { require( uint(items[_sku].state) == 0 ); _;}
-  modifier sold (uint _sku) { require( uint(items[_sku].state) == 1 ); _;}
-  modifier shipped (uint _sku) { require( uint(items[_sku].state) == 2 ); _;}
-  modifier received (uint _sku) { require( uint(items[_sku].state) == 3 ); _;}
+  modifier forSale (uint sku) { require( uint(items[sku].state) == 0 ); _;}
+  modifier sold (uint sku) { require( uint(items[sku].state) == 1 ); _;}
+  modifier shipped (uint sku) { require( uint(items[sku].state) == 2 ); _;}
+  modifier received (uint sku) { require( uint(items[sku].state) == 3 ); _;}
 
 
   constructor() public payable {
@@ -96,29 +96,29 @@ contract SupplyChain {
     if the buyer paid enough, and check the value after the function is called to make sure the buyer is
     refunded any excess ether sent. Remember to call the event associated with this function!*/
 
-  function buyItem(uint _sku)
+  function buyItem(uint sku)
     payable
     public
-    forSale(_sku)
-    paidEnough(_sku)
-    checkValue(_sku)
+    forSale(sku)
+    paidEnough(sku)
+    checkValue(sku)
   {
-    items[_sku].buyer = msg.sender;
-    items[_sku].seller.transfer(items[_sku].price);
-    items[_sku].state = State(1);
-    emit Sold(_sku);
+    items[sku].buyer = msg.sender;
+    items[sku].seller.transfer(items[sku].price);
+    items[sku].state = State(1);
+    emit Sold(sku);
   }
 
   /* Add 2 modifiers to check if the item is sold already, and that the person calling this function
   is the seller. Change the state of the item to shipped. Remember to call the event associated with this function!*/
 
-  modifier isSold (uint _sku) { 
-   require( uint(items[_sku].state) >= 1); 
+  modifier isSold (uint sku) { 
+   require( uint(items[sku].state) >= 1); 
    _;
   } 
 
-  modifier callerIsSeller (uint _sku) { 
-   require( items[_sku].seller == msg.sender); 
+  modifier callerIsSeller (uint sku) { 
+   require( items[sku].seller == msg.sender); 
    _;
   }
 
@@ -134,13 +134,13 @@ contract SupplyChain {
   /* Add 2 modifiers to check if the item is shipped already, and that the person calling this function
   is the buyer. Change the state of the item to received. Remember to call the event associated with this function!*/
 
-modifier isShipped (uint _sku) { 
-   require( uint(items[_sku].state) >= 2); 
+modifier isShipped (uint sku) { 
+   require( uint(items[sku].state) >= 2); 
    _;
   } 
 
- modifier callerIsBuyer (uint _sku) { 
-   require( items[_sku].buyer == msg.sender); 
+ modifier callerIsBuyer (uint sku) { 
+   require( items[sku].buyer == msg.sender); 
    _;
   }
 
@@ -164,5 +164,4 @@ modifier isShipped (uint _sku) {
     buyer = items[_sku].buyer;
     return (name, sku, price, state, seller, buyer);
   }
-
 }

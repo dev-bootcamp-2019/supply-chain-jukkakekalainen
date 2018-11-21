@@ -17,15 +17,13 @@ contract('SupplyChain', function(accounts) {
 
         var event = supplyChain.ForSale()
         await event.watch((err, res) => {
-            sku = parseInt(res.args.sku) 
+            sku = res.args.sku.toString(10)
             eventEmitted = true
         })
 
         const name = "book"
-        const secondname = "apple"
 
         await supplyChain.addItem(name, price, {from: alice})
-        await supplyChain.addItem(secondname, price, {from: alice})
 
         const result = await supplyChain.fetchItem.call(sku)
 
@@ -44,7 +42,7 @@ contract('SupplyChain', function(accounts) {
 
         var event = supplyChain.Sold()
         await event.watch((err, res) => {
-            sku = parseInt(res.args.sku)
+            sku = res.args.sku.toString(10)
             eventEmitted = true
         })
 
@@ -74,7 +72,7 @@ contract('SupplyChain', function(accounts) {
 
         var event = supplyChain.Shipped()
         await event.watch((err, res) => {
-            sku = parseInt(res.args.sku) 
+            sku = res.args.sku.toString(10)
             eventEmitted = true
         })
 
@@ -93,7 +91,7 @@ contract('SupplyChain', function(accounts) {
 
         var event = supplyChain.Received()
         await event.watch((err, res) => {
-            sku = parseInt(res.args.sku)
+            sku = res.args.sku.toString(10)
             eventEmitted = true
         })
 
