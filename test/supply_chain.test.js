@@ -7,7 +7,8 @@ contract('SupplyChain', function(accounts) {
     const bob = accounts[2]
     const emptyAddress = '0x0000000000000000000000000000000000000000'
 
-    var sku
+    // Added init value for travis test. Local tests passed without
+    var sku = 0
     const price = web3.toWei(1, "ether")
 
     it("should add an item with the provided name and price", async() => {
@@ -20,7 +21,7 @@ contract('SupplyChain', function(accounts) {
             sku = res.args.sku.toString(10)
             eventEmitted = true
         })
-
+     
         const name = "book"
 
         await supplyChain.addItem(name, price, {from: alice})
