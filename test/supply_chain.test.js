@@ -7,8 +7,7 @@ contract('SupplyChain', function(accounts) {
     const bob = accounts[2]
     const emptyAddress = '0x0000000000000000000000000000000000000000'
 
-    // Added init value for travis test. Local tests passed without
-    var sku = 0
+    var sku
     const price = web3.toWei(1, "ether")
 
     it("should add an item with the provided name and price", async() => {
@@ -16,15 +15,25 @@ contract('SupplyChain', function(accounts) {
 
         var eventEmitted = false
 
+        /** Commented for Travis failing
         var event = supplyChain.ForSale()
         await event.watch((err, res) => {
             sku = res.args.sku.toString(10)
             eventEmitted = true
         })
+        */
      
         const name = "book"
 
-        await supplyChain.addItem(name, price, {from: alice})
+        //
+
+        const tx = await supplyChain.addItem(name, price, {from: alice})
+        if (tx.logs[0].event === "ForSale") {
+                sku = tx.logs[0].args.sku.toString(10)
+                eventEmitted = true
+        }
+
+        //await supplyChain.addItem(name, price, {from: alice})
 
         const result = await supplyChain.fetchItem.call(sku)
 
@@ -41,18 +50,28 @@ contract('SupplyChain', function(accounts) {
 
         var eventEmitted = false
 
+        /** Commented for Travis failing
         var event = supplyChain.Sold()
         await event.watch((err, res) => {
             sku = res.args.sku.toString(10)
             eventEmitted = true
         })
+        */
 
         const amount = web3.toWei(2, "ether")
 
         var aliceBalanceBefore = await web3.eth.getBalance(alice).toNumber()
         var bobBalanceBefore = await web3.eth.getBalance(bob).toNumber()
 
-        await supplyChain.buyItem(sku, {from: bob, value: amount})
+        //
+
+        const tx = await supplyChain.buyItem(sku,{from: bob, value: amount})
+        if (tx.logs[0].event === "Sold") {
+                sku = tx.logs[0].args.sku.toString(10)
+                eventEmitted = true
+        }
+
+        //await supplyChain.buyItem(sku, {from: bob, value: amount})
 
         var aliceBalanceAfter = await web3.eth.getBalance(alice).toNumber()
         var bobBalanceAfter = await web3.eth.getBalance(bob).toNumber()
@@ -71,13 +90,23 @@ contract('SupplyChain', function(accounts) {
 
         var eventEmitted = false
 
+        /** Commented for Travis failing
         var event = supplyChain.Shipped()
         await event.watch((err, res) => {
             sku = res.args.sku.toString(10)
             eventEmitted = true
         })
+        */
 
-        await supplyChain.shipItem(sku, {from: alice})
+       const tx = await supplyChain.shipItem(sku, {from: alice})
+       if (tx.logs[0].event === "Shipped") {
+               sku = tx.logs[0].args.sku.toString(10)
+               eventEmitted = true
+       }
+
+        //await supplyChain.shipItem(sku, {from: alice})
+
+        
 
         const result = await supplyChain.fetchItem.call(sku)
 
@@ -90,13 +119,21 @@ contract('SupplyChain', function(accounts) {
 
         var eventEmitted = false
 
+         /** Commented for Travis failing
         var event = supplyChain.Received()
         await event.watch((err, res) => {
             sku = res.args.sku.toString(10)
             eventEmitted = true
         })
+        */
 
-        await supplyChain.receiveItem(sku, {from: bob})
+       const tx = await supplyChain.receiveItem(sku, {from: bob})
+       if (tx.logs[0].event === "Received") {
+               sku = tx.logs[0].args.sku.toString(10)
+               eventEmitted = true
+       }
+
+        //await supplyChain.receiveItem(sku, {from: bob})
 
         const result = await supplyChain.fetchItem.call(sku)
 
